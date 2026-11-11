@@ -1,39 +1,28 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
-import 'p3_detalle.dart';
+import '../data/carta.dart';
+import '../widgets/cartia_widgets.dart';
 
 class P2Categoria extends StatelessWidget {
-  const P2Categoria({super.key});
+  final String categoria;
+  const P2Categoria({super.key, required this.categoria});
 
   @override
   Widget build(BuildContext context) {
+    final platos = Carta.porCategoria(categoria);
     return Scaffold(
-      appBar: AppBar(title: const Text('CARTIA')),
-      body: ListView(
+      appBar: const CartiaHeader(),
+      body: FondoOndas(child: ListView(
         padding: const EdgeInsets.all(24),
         children: [
-          Text('Entrantes', style: Theme.of(context).textTheme.headlineMedium),
+          Text(categoria, style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: 12),
-          const Text('Selecciona un plato para ver sus detalles.'),
+          Text('${platos.length} platos disponibles. Selecciona uno para ver sus detalles.'),
           const SizedBox(height: 24),
-          Card(
-            color: CartiaColors.tarjetas,
-            shape: RoundedRectangleBorder(
-              side: const BorderSide(color: CartiaColors.bordes),
-              borderRadius: BorderRadius.circular(9),
-            ),
-            child: ListTile(
-              title: const Text('Croquetas caseras'),
-              subtitle: const Text('Crujientes por fuera, cremosas por dentro.'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => Navigator.push(context,
-                MaterialPageRoute(builder: (_) => const P3Detalle())),
-            ),
-          ),
-          const SizedBox(height: 12),
-          const Text('Más platos de ejemplo se añadirán posteriormente.'),
+          for (final plato in platos) TarjetaPlato(plato: plato),
+          const SizedBox(height: 18),
+          const AvisoAlergenos(),
         ],
-      ),
+      )),
     );
   }
 }
