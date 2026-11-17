@@ -9,16 +9,19 @@ class P8Confirmacion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const CartiaHeader(),
+    appBar: const CartiaHeader(excludeHeaderSemantics: true),
     body: FondoOndas(child: ListView(
       padding: const EdgeInsets.all(24),
       children: [
         const Icon(Icons.check_circle_outline, size: 68,
           color: CartiaColors.exito),
         const SizedBox(height: 14),
-        Text('Pedido de demostración confirmado',
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineMedium),
+        Semantics(
+          header: true,
+          namesRoute: true,
+          child: Text('Pedido de demostración confirmado',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineMedium)),
         const SizedBox(height: 10),
         Text('Referencia local: ${recibo.referencia}',
           textAlign: TextAlign.center,

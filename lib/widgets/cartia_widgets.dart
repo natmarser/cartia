@@ -6,19 +6,26 @@ import '../screens/p3_detalle.dart';
 /// Cabecera con el logotipo del prototipo original.
 class CartiaHeader extends StatelessWidget implements PreferredSizeWidget {
   final bool inicio;
-  const CartiaHeader({super.key, this.inicio = false});
+  final bool excludeHeaderSemantics;
+  const CartiaHeader({super.key, this.inicio = false, this.excludeHeaderSemantics = false});
 
   @override
   Size get preferredSize => const Size.fromHeight(68);
 
   @override
   Widget build(BuildContext context) => AppBar(
-    automaticallyImplyLeading: !inicio,
+    excludeHeaderSemantics: excludeHeaderSemantics,
+    automaticallyImplyLeading: false,
+    leading: inicio ? null : IconButton(
+      tooltip: 'Volver a la pantalla anterior',
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () { Navigator.maybePop(context); },
+    ),
     toolbarHeight: 68,
     titleSpacing: inicio ? 20 : 0,
     title: Row(children: [
       Image.asset('assets/images/logo_cartia.png', width: 125,
-        height: 57, fit: BoxFit.contain,
+        height: 57, fit: BoxFit.contain, semanticLabel: 'Cartia',
         errorBuilder: (_, _, _) => const Text('CARTIA')),
       const Spacer(),
       const Text('Carta digital', style: TextStyle(
@@ -77,9 +84,12 @@ class TituloSeccion extends StatelessWidget {
   const TituloSeccion(this.texto, {super.key});
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 12),
-    child: Text(texto, style: Theme.of(context).textTheme.titleLarge),
+  Widget build(BuildContext context) => Semantics(
+    header: true,
+    child: Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Text(texto, style: Theme.of(context).textTheme.titleLarge),
+    ),
   );
 }
 
@@ -107,45 +117,56 @@ class TarjetaPlato extends StatelessWidget {
   const TarjetaPlato({super.key, required this.plato});
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 12),
-    child: Material(
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-        side: const BorderSide(color: CartiaColors.bordes, width: 1.4)),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(18),
-        onTap: () => Navigator.push(context,
-          MaterialPageRoute(builder: (_) => P3Detalle(plato: plato))),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-          child: Row(children: [
-            Container(width: 48, height: 48,
-              decoration: BoxDecoration(color: CartiaColors.botonSecundario,
-                borderRadius: BorderRadius.circular(12)),
-              child: const Icon(Icons.restaurant_menu,
-                color: CartiaColors.botonPrincipal)),
-            const SizedBox(width: 12),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(plato.nombre, style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 4),
-                Text(plato.descripcion, maxLines: 2, overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyMedium),
-                const SizedBox(height: 6),
-                Text(plato.precioFormateado, style: const TextStyle(
-                  fontSize: 16, fontWeight: FontWeight.w800,
-                  color: CartiaColors.botonPrincipal)),
-              ])),
-            const SizedBox(width: 8),
-            const Icon(Icons.chevron_right, size: 30,
-              color: CartiaColors.botonPrincipal),
-          ]),
+  Widget build(BuildContext context) {
+    void abrirDetalle() => Navigator.push(context,
+      MaterialPageRoute(builder: (_) => P3Detalle(plato: plato)));
+
+    return Semantics(
+      button: true,
+      label: '${plato.nombre}. ${plato.descripcion}. Precio ${plato.precioFormateado}',
+      hint: 'Abrir detalles del plato',
+      onTap: abrirDetalle,
+      excludeSemantics: true,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Material(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+            side: const BorderSide(color: CartiaColors.bordes, width: 1.4)),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(18),
+            onTap: abrirDetalle,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+              child: Row(children: [
+                Container(width: 48, height: 48,
+                  decoration: BoxDecoration(color: CartiaColors.botonSecundario,
+                    borderRadius: BorderRadius.circular(12)),
+                  child: const Icon(Icons.restaurant_menu,
+                    color: CartiaColors.botonPrincipal)),
+                const SizedBox(width: 12),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(plato.nombre, style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: 4),
+                    Text(plato.descripcion, maxLines: 2, overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium),
+                    const SizedBox(height: 6),
+                    Text(plato.precioFormateado, style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w800,
+                      color: CartiaColors.botonPrincipal)),
+                  ])),
+                const SizedBox(width: 8),
+                const Icon(Icons.chevron_right, size: 30,
+                  color: CartiaColors.botonPrincipal),
+              ]),
+            ),
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 /// Acción principal de ancho completo en pantallas secundarias.

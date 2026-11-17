@@ -25,13 +25,30 @@ class P5Resultados extends StatelessWidget {
         ? 'No has seleccionado ningún alérgeno para excluir.'
         : 'Excluidos: ${(alergenosExcluidos!.toList()..sort()).join(', ')}';
 
+    // Nombre accesible de la nueva pantalla, anunciado por TalkBack
+    // al entrar sin convertir la lista completa en un anuncio automático.
+    final resumenRuta = esBusqueda
+      ? 'Resultados de búsqueda. Búsqueda: ${consulta!.trim()}. '
+        '${resultados.length} ${resultados.length == 1 ? 'plato encontrado' : 'platos encontrados'}.'
+      : 'Resultados de filtros. '
+        '${alergenosExcluidos!.isEmpty ? 'No hay alérgenos excluidos' : 'Alérgenos excluidos: ${(alergenosExcluidos!.toList()..sort()).join(', ')}'}. '
+        '${resultados.length} ${resultados.length == 1 ? 'plato encontrado' : 'platos encontrados'}.';
+
     return Scaffold(
-      appBar: const CartiaHeader(),
+      appBar: const CartiaHeader(excludeHeaderSemantics: true),
       body: FondoOndas(child: ListView(
         padding: const EdgeInsets.all(24),
         children: [
-          Text(esBusqueda ? 'Resultados de búsqueda' : 'Resultados de filtros',
-            style: Theme.of(context).textTheme.headlineMedium),
+          Semantics(
+            header: true,
+            namesRoute: true,
+            label: resumenRuta,
+            excludeSemantics: true,
+            child: Text(
+              esBusqueda ? 'Resultados de búsqueda' : 'Resultados de filtros',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ),
           const SizedBox(height: 12),
           Text(descripcion, style: Theme.of(context).textTheme.bodyLarge),
           const SizedBox(height: 16),
