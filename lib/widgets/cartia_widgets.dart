@@ -150,7 +150,7 @@ class TarjetaPlato extends StatelessWidget {
                   children: [
                     Text(plato.nombre, style: Theme.of(context).textTheme.titleMedium),
                     const SizedBox(height: 4),
-                    Text(plato.descripcion, maxLines: 2, overflow: TextOverflow.ellipsis,
+                    Text(plato.descripcion, softWrap: true,
                       style: Theme.of(context).textTheme.bodyMedium),
                     const SizedBox(height: 6),
                     Text(plato.precioFormateado, style: const TextStyle(
@@ -175,14 +175,46 @@ class CartiaBoton extends StatelessWidget {
   final IconData icono;
   final VoidCallback? onPressed;
   final bool secundario;
+
   const CartiaBoton({super.key, required this.texto, required this.icono,
     this.onPressed, this.secundario = false});
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    width: double.infinity, height: 60,
-    child: secundario
-      ? OutlinedButton.icon(onPressed: onPressed, icon: Icon(icono), label: Text(texto))
-      : ElevatedButton.icon(onPressed: onPressed, icon: Icon(icono), label: Text(texto)),
-  );
+  Widget build(BuildContext context) {
+    final estilo = ButtonStyle(
+      padding: const WidgetStatePropertyAll(
+        EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+      ),
+      minimumSize: const WidgetStatePropertyAll(
+        Size(0, 60),
+      ),
+      tapTargetSize: MaterialTapTargetSize.padded,
+    );
+
+    final etiqueta = Text(
+      texto,
+      textAlign: TextAlign.center,
+      softWrap: true,
+    );
+
+    return SizedBox(
+      width: double.infinity,
+      child: secundario
+          ? OutlinedButton.icon(
+              style: estilo,
+              onPressed: onPressed,
+              icon: Icon(icono),
+              label: etiqueta,
+            )
+          : ElevatedButton.icon(
+              style: estilo,
+              onPressed: onPressed,
+              icon: Icon(icono),
+              label: etiqueta,
+            ),
+    );
+  }
 }

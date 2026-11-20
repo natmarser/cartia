@@ -52,13 +52,31 @@ class _P3DetalleState extends State<P3Detalle> {
               color: Colors.white,
               border: Border.all(color: CartiaColors.bordes, width: 1.5),
               borderRadius: BorderRadius.circular(16)),
-            child: Row(children: [
-              const Icon(Icons.payments_outlined, color: CartiaColors.botonPrincipal),
-              const SizedBox(width: 12),
-              const Text('Precio por unidad', style: TextStyle(fontSize: 16)),
-              const Spacer(),
-              Text(plato.precioFormateado, style: Theme.of(context).textTheme.titleMedium),
-            ]),
+            
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.payments_outlined,
+                  color: CartiaColors.botonPrincipal,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Precio por unidad',
+                    style: const TextStyle(fontSize: 16),
+                    softWrap: true,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                    plato.precioFormateado,
+                    style: Theme.of(context).textTheme.titleMedium,
+                    textAlign: TextAlign.end,
+                  ),
+
+              ],
+            ),
+
           ),
           const SizedBox(height: 24),
           const TituloSeccion('Ingredientes principales'),
